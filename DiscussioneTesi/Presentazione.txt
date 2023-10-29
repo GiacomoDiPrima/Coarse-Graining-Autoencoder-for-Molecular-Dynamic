@@ -1,0 +1,79 @@
+Il mio lavoro di tesi riguarda lo studio e l'applicabulità del framework degli autoencoders per 
+ottenere rappresentazioni CG di sistemi atomistici.
+
+Il coarse-graining consiste nel rappresentare gruppi di atomi o intere molecole come siti di
+interazione CG, ovvero punti dotati di massa e privi di struttura. Le posizioni e i momenti dei siti
+CG sono definite come combinazioni lineari delle posizioni e dei momenti degli atomi ad essi 
+assegnati. Questa tecnica consente di ridurre il numero di gradi di libertà necessari per descrivere
+un sistema atomistico ed un conseguente risparmio computazionale nel momento in cui lo si simula al 
+computer.
+
+E' possibile impiegare tecniche di ML per trovare rappresentazioni CG di questi sistemi. Gli AE
+sono un modello di NN lineare che impara a copiare in output l'input che riceve. La prima parte
+della rete è detta encoder, ed impara a proiettare i dati in uno spazio di dimensione inferiore, 
+la quale dipende dalla dimensione del bottleneck. Questo spazio è detto spazio latente. A partire
+da quest'ultimo il decoder impara a ricostruire i dati partendo dalla rappresentazione ridotta
+precedentemente ottenuta. I parametri della rete vengono ottimizzati minimizzando una funzione,
+detta loss funtion, che penalizza l'output per essere dissimile dall'input, un esempio può essere 
+lo MSE.
+
+Nell'articolo del 2019 'CG autoencoders per la dinamica molecolare' gli autori si pongono come 
+obbiettivi  quelli di sviluppare un AE in grado di trovare una rappresentazione CG di sistemi 
+atomistici, sul quale il mio lavoro si concentra, e sviluppare un modello in grado di parametrizzare 
+un potenziale CG a partire dal potenziale atomistico.
+
+Nel modello da loro sviluppato i parametri dell'encoder corrispondono alle probabilità che un 
+particolare atomo venga assegnato ad un sito CG piuttosto che ad un altro. Inizialmente i parametri 
+vengono inizializzati casualmente. Durante il training, per un dato atomo le probabilità di essere 
+assegnato ad i siti CG si azzereranno a meno di una che sarà massima e ne comporterà l'assegnazione 
+al sito corrispondente. La loss function della rete è costituita da due termini, il primo è detto di
+ricostruzione ed è equivalente all'MSE, il secondo è un termine di regolarizzazione che dipende dalle
+forze atomistiche e serve a regolarizzare il profilo dell'energia libera. I dati che vengono 
+utilizzati sono frames di traiettorie atomistiche di molecole all'equilibrio che contengono le 
+posizioni di tutti gli atomi.
+
+Ci aspettiamo che un AE con uno spazio latente di dimensione maggiore riesca a catturare un maggior
+numero di informazioni rispetto ad un modello con dimensioni ridotte. E' quello che viene verificato 
+studiano il comportamento della rete applicata alle molecole di OTP e anilina. I grafici a destra 
+presentano il valore della loss function di ricostruzione, in blu, in funzione del numero di siti
+usati per la rappresentazione. Si nota come all'aumentare di quest'utlimo il valore della loss
+diminuisca, come ci si aspetterebbe, e come quello del termine di regolarizzazione, in verde, 
+aumenti per via dell'aumento dell'irregolarità del potenziale.
+
+Similmente sono state studiate le mappe di ramachandran delle configurazioni atomistiche ricostruite
+a partire da diverse risoluzioni CG. Quello che si nota è come all'aumentare del numero dei siti
+le mappe diventino sempre più simili a quella generata dal modello atomistico originale.
+
+In definitiva l'AE riesce ad ottenere con successo delle rappresentazioni CG che racchiudono le 
+caratteristiche salienti delle molecole, riducendo il numero di gradi di libertà necessari a
+descrivere il sistema. Esso però è deterministico e la ricostruzione delle configurazioni a partire
+dalle rappresentazioni CG risulta in una configurazione media di quele utilizzate per il training.
+
+Ho applicato l'architettura proposta nell'articolo precedentemente esposto a configurazioni atomistiche 
+di polimeri ad anello costituiti da 70 monomeri. I dati sono stati generati a partire da simulazioni di 
+dinamica molecolare mentenute a temperatura costante. Per fare ciò sono state impiegate due diverse tecniche:
+la prima utilizza il termostato di Langevin, per il quale ad ogni monomero viene imposta una forza casuale, 
+con cui sono state generate 10000 configurazioni all'equilibrio, mentre la seconda utilizza il termostato di nose-hoover, 
+che sfrutta una variabile dinamica aggiuntiva per regolarizzare le fluttuazioni del sistema, con la quale 
+sono state generate 10000 configurazioni all'equilibrio ed altre 10000 fuori dall'equilibrio.
+
+Le gif a destra presentano la visualizzazione del processo di training. Sull’asse x si trovano gli atomi 
+della molecola mentre sull’asse y i siti CG ai quali possono essere assegnati. Le matrici colorate 
+rappresentano i valori relativi  dei parametri dell’encoder della rete. In alto vediamo il training
+utilizzando NH all'equilibrio e in basso quello al non equilibrio.
+
+In accordo con i risultati dell'articolo precedentemente esposto possiamo vedere dalla visualizzazione
+della molecola come un maggior numero di siti CG riesce a catturare maggiori caratteristiche del polimero, 
+in particolare nell'immagine è riportato il caso di una rappresentazione che sfrutta 6 e 24 siti CG.
+
+Questo lo vediamo anche dall'andamento delle loss function di ricostruzione, in blu, che decresce all'aumentare
+della risoluzione impiegata. Confrontando i valori delle loss function otteniti a partire dai set all'equilibrio 
+e non, si nota come la loss di ricostruzione si sensibilmente inferiore per il set al non equilibrio
+per basse risoluzioni, inoltre la rete addestrata a partire da questo set non riesce a sfrutttare tutti i 
+gradi di libertà che le vengono concessi, non assegnado atomi ad alcuni siti CG.
+
+Concludendo, il framework può essere applicato ai polomeri ad anello all'equilibrio con successo, ottenendo delle rappresentazioni
+CG della molecola, Purtroppo se si utilizzano configurazioni fuori dall'equilibrio l'AE non riesce a sfruttare
+tutti i siti CG che gli vengono concessi, indipendentemente dai valori del termine di regolarizzazione.
+
+ 

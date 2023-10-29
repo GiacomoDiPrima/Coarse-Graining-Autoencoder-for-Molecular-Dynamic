@@ -1,0 +1,16 @@
+1.	Titolo						ok
+2.	Indice#1	capitolo1			ok
+3.	CG	\\Titolo, Immagine			ok
+4.	Indice#2	capitolo 2
+5.	AE	\\Titolo, Immagine, Bullet points	ok	
+6.	Indice#3	capitolo3
+7.	A. Obbiettivi	\\Titolo, Bullet points		ok
+8.	A. Rete		\\Titolo, GIF
+9.	A. Risultati	\\Titolo, Immagine
+10.	A. Discussione	\\Titolo, Risultati e problemi
+11.	Indice#4	capitolo4
+12.	P. Molecola	\\Titolo, Immagine
+13.	P. Dati		\\Titolo, Due descrizioni
+14.	P. Risultati	\\Titolo, Immagine
+15.	P. Discussione	\\Titolo, Risultati e problemi
+16.	Ringraziamenti
